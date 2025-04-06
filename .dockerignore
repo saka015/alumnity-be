@@ -1,0 +1,26 @@
+# Ignore node_modules - we'll install them fresh in the container
+node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Local env files
+.env
+.env.*.local
+
+# Prisma generated stuff (optional, can be regenerated in container)
+prisma/dev.db
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+
+# System files
+.DS_Store
+
+# IDE / Editor folders
+.vscode
+.idea
