@@ -1,17 +1,34 @@
-// src/prisma/prisma.service.ts
-
-import { Injectable, OnModuleInit, INestApplication } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit {
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+  constructor() {
+    super({
+      log: ['error', 'warn'],
+      errorFormat: 'pretty',
+    });
+  }
+
   async onModuleInit() {
     await this.$connect();
   }
 
-  async enableShutdownHooks(app: INestApplication) {
-    this.$on('beforeExit', async () => {
-      await app.close();
-    });
+  async onModuleDestroy() {
+    await this.$disconnect();
+  }
+
+  async cleanDatabase() {
+    if (process.env.NODE_ENV === 'production') return;
+    // Add logic for cleaning the database in development/test environments
+  }
+
+  // Expose queryRaw for raw SQL queries
+
+  $queryRaw<T = unknown>(
+    query: TemplateStringsArray | Prisma.Sql,
+    ...values: any[]
+  ): Prisma.PrismaPromise<T> {
+    return this.$queryRaw(query, ...values);
   }
 }

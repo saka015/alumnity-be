@@ -9,12 +9,12 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  name        String
-  otp         String?
-  otpExpiry   DateTime?
-  verified    Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("junior")
+  createdAt DateTime @default(now())
 }
+
 
