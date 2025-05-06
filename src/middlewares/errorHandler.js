@@ -1,9 +1,18 @@
-const { AppError, InternalServerError } = require("../utils/AppError");
 const winston = require("winston");
+const { AppError } = require("../utils/AppErrror");
+
+// Define the InternalServerError class here
+class InternalServerError extends Error {
+  constructor(message = "Internal Server Error") {
+    super(message);
+    this.statusCode = 500;  // HTTP Status Code for Internal Server Error
+    this.name = "InternalServerError";  // Error name
+  }
+}
 
 const errorHandler = (err, req, res, next) => {
   if (!(err instanceof AppError)) {
-    err = new InternalServerError();
+    err = new InternalServerError();  // Now you can use InternalServerError directly
   }
 
   logError(err);
