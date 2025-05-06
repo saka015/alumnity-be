@@ -22,8 +22,8 @@ app.use(morgan("dev"));
 // 3. Enable CORS (with credentials enabled for cookie support)
 app.use(
   cors({
-    origin: "*", // Update with your frontend URL
-    credentials: true, // Allow cookies
+    origin: process.env.FRONTEND_URL || "*",
+    credentials: true,
   })
 );
 
@@ -46,17 +46,20 @@ app.use(limiter);
 
 // Routes
 // 1. Auth routes (for register, login, etc.)
-app.use("/api/v1/", authRoutes);
+app.use("/api/v1", authRoutes);
+
+// 2. User routes (for user profile, etc.)
+app.use("/api/v1/user", userRoutes);
 
 // 3. Default Route (for testing or fallback)
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send("Server is running");
 });
 
 // Global 404 handler for undefined routes
-app.all("/{*any}", (req, res) => {
-  res.status(404).json({ success: false, message: "API endpoint not found" });
-});
+// app.all("*", (req, res) => {
+//   res.status(404).json({ success: false, message: "API endpoint not found" });
+// });
 
 // Global Error Handler (catch all errors)
 app.use(errorHandler);

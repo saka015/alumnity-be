@@ -13,9 +13,8 @@ const userSchema = new mongoose.Schema(
       required: [true, "Username is required"],
       trim: true,
       unique: true,
-        lowercase: true,
+      lowercase: true,
       minlength: [5, "Username must be at least 5 characters"],
-      
     },
     email: {
       type: String,
@@ -62,5 +61,6 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Export model
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+
+module.exports = { User };
