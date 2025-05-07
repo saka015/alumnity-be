@@ -5,7 +5,7 @@ services:
     plan: free
     buildCommand: npm install
     startCommand: npm start
-    repo: https://github.com/your-username/your-repo
+    repo: https://github.com/saka015/alumnity-be
     branch: main
     region: oregon
     envVars:
