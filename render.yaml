@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: my-node-app
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    repo: https://github.com/your-username/your-repo
+    branch: main
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
