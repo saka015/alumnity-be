@@ -9,6 +9,7 @@ const errorHandler = require("./middlewares/errorHandler"); // Global error hand
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const taskRoutes = require("./routes/task.routes");
+const connectionRoutes = require("./routes/connection.routes");
 
 // Create express app
 const app = express();
@@ -52,6 +53,8 @@ app.use("/api/v1", authRoutes);
 // 2. User routes (for user profile, etc.)
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/task", taskRoutes);
+app.use("/api/v1/connection", connectionRoutes);
+
 
 // 3. Default Route (for testing or fallback)
 app.get("/", (req, res) => {
