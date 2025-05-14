@@ -7,22 +7,42 @@ const postCreateTask = async(userId, taskData) => {
     }
 
     const newTask = new Task({
-        userId,
         ...taskData,
+        createdBy: userId,
     });
 
     await newTask.save();
     return newTask;
 };
 
-const getMyTasks = async(userId) => {
+const getMyTasks = async(userId, searchTerm = "", page = 1, limit = 10) => {
     if (!userId) {
         throw new NotFoundError("User ID is required.");
     }
 
-    const myTasks = await Task.find({ userId });
+    const query = { createdBy: userId };
+    if (searchTerm) {
+        query.title = { $regex: searchTerm, $options: "i" };
+    }
 
-    return myTasks;
+    const totalTasks = await Task.countDocuments(query);
+    const totalPages = Math.ceil(totalTasks / limit);
+    const skip = (page - 1) * limit;
+
+    const tasks = await Task.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    return {
+        tasks,
+        pagination: {
+            currentPage: page,
+            totalPages,
+            totalItems: totalTasks,
+            itemsPerPage: limit,
+        },
+    };
 };
 
 module.exports = { postCreateTask, getMyTasks };
