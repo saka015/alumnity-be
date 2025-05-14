@@ -1,6 +1,36 @@
 const { User } = require("../models/user.model");
 const { ValidationError, NotFoundError } = require("../utils/AppErrror");
+const {
+  getExploreSeniors,
+  getAlumniById,
+} = require("../services/user.service");
 
+const exploreAlumni = async (req, res, next) => {
+  try {
+    const { searchTerm } = req.query;
+    const seniors = await getExploreSeniors(req.user._id, searchTerm);
+    res.status(200).json(seniors);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const alumniByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const alumni = await User.findOne({ username }).select("-password");
+
+    if (!alumni) {
+      return res.status(404).json({ message: "Alumni not found" });
+    }
+
+    res.json(alumni);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// test
 const getUserProfile = async (req, res, next) => {
   try {
     const user = req.user;
@@ -99,4 +129,6 @@ module.exports = {
   getUserProfile,
   updateProfile,
   changePassword,
+  exploreAlumni,
+  alumniByUsername,
 };

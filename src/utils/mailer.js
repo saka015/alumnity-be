@@ -17,6 +17,11 @@ const createTransporter = () => {
 
 const sendOtpEmail = async (to, otp) => {
   try {
+    if (process.env.NODE_ENV === "development") {
+      console.log(`✅ Development mode: Using default OTP 111111 for ${to}`);
+      return;
+    }
+
     const transporter = createTransporter();
 
     const mailOptions = {

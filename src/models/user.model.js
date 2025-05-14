@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "Email is required"],
-      // unique: true,
+      unique: true,
       lowercase: true,
       trim: true,
       match: [
@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters"],
-      select: false, // Exclude from queries by default
+      select: false,
     },
     role: {
       type: String,
@@ -41,6 +41,22 @@ const userSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    graduationYear: {
+      type: Number,
+      required: true,
+    },
+    linkedin: {
+      type: String,
+      required: true,
+    },
+    company: {
+      type: String,
+      required: true,
+    },
+    position: {
+      type: String,
+      required: true,
     },
   },
   {
