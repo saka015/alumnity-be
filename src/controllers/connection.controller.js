@@ -35,8 +35,22 @@ const getConnections = async(req, res, next) => {
         next(err);
     }
 };
+
+const getConnectionStatus = async(req, res, next) => {
+    try {
+        const connectionStatus = await connectionService.getConnectionStatus(
+            req.user._id,
+            req.params.userId
+        );
+        res.status(200).json({ connectionStatus });
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
     sendRequest,
     acceptRequest,
     getConnections,
+    getConnectionStatus,
 };

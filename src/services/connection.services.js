@@ -27,8 +27,34 @@ const getUserConnections = async(status, userId) => {
     }).populate("sender receiver");
 };
 
+const getConnectionStatus = async(currentUserId, profileUserId) => {
+    const existingConnection = await Connection.findOne({
+        $or: [
+            { sender: currentUserId, receiver: profileUserId },
+            { sender: profileUserId, receiver: currentUserId },
+        ],
+    });
+
+    let connectionStatus = "none";
+
+    if (existingConnection) {
+        if (existingConnection.status === "pending") {
+            if (existingConnection.sender.toString() === currentUserId.toString()) {
+                connectionStatus = "requested";
+            } else {
+                connectionStatus = "incoming";
+            }
+        } else if (existingConnection.status === "accepted") {
+            connectionStatus = "connected";
+        }
+    }
+
+    return connectionStatus;
+};
+
 module.exports = {
     sendConnectionRequest,
     acceptConnection,
     getUserConnections,
+    getConnectionStatus,
 };
