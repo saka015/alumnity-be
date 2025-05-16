@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const Connection = require("../models/connection.model");
 
 const sendConnectionRequest = async(senderId, receiverId) => {
@@ -14,11 +16,41 @@ const sendConnectionRequest = async(senderId, receiverId) => {
     return connection;
 };
 
+// const acceptConnection = async(receiverId, senderId) => {
+//     const connection = await Connection.findOneAndUpdate({ receiver: receiverId, sender: senderId, status: "pending" }, { status: "accepted" }, { new: true });
+//     if (!connection) throw new Error("Request not found");
+//     return connection;
+// };
+
+// const acceptConnection = async(receiverId, senderId) => {
+//     const connection = await Connection.findOneAndUpdate({ receiver: receiverId, sender: new mongoose.Types.ObjectId(senderId), status: "pending" }, { status: "accepted" }, { new: true });
+//     if (!connection) throw new Error(`Connection request from ${senderId} to ${receiverId} not found or already accepted`);
+//     return connection;
+// };
+
+
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
 const acceptConnection = async(receiverId, senderId) => {
-    const connection = await Connection.findOneAndUpdate({ receiver: receiverId, sender: senderId, status: "pending" }, { status: "accepted" }, { new: true });
-    if (!connection) throw new Error("Request not found");
+    if (!isValidObjectId(receiverId) || !isValidObjectId(senderId)) {
+        throw new Error("Invalid receiverId or senderId");
+    }
+
+    const receiverObjectId = new mongoose.Types.ObjectId(receiverId);
+    const senderObjectId = new mongoose.Types.ObjectId(senderId);
+
+    const connection = await Connection.findOneAndUpdate({ receiver: receiverObjectId, sender: senderObjectId, status: "pending" }, { status: "accepted" }, { new: true });
+
+    if (!connection) {
+        throw new Error(
+            `Connection request from ${senderId} to ${receiverId} not found or already accepted`
+        );
+    }
+
     return connection;
 };
+
+
 
 const getUserConnections = async(status, userId) => {
     return Connection.find({

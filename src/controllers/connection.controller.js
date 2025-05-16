@@ -12,11 +12,28 @@ const sendRequest = async(req, res, next) => {
     }
 };
 
+// const acceptRequest = async(req, res, next) => {
+//     try {
+//         const connection = await connectionService.acceptConnection(
+//             req.user._id,
+//             req.body.senderId
+//         );
+//         res.status(200).json(connection);
+//     } catch (err) {
+//         next(err);
+//     }
+// };
+
 const acceptRequest = async(req, res, next) => {
     try {
+        console.log("Incoming accept request:", {
+            receiverId: req.user._id,
+            senderId: req.body.senderId,
+        });
+
         const connection = await connectionService.acceptConnection(
-            req.user._id,
-            req.body.senderId
+            req.user._id, // This should be the receiverId
+            req.body.senderId // This should be the senderId
         );
         res.status(200).json(connection);
     } catch (err) {
