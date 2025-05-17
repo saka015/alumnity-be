@@ -3,21 +3,44 @@ const mongoose = require("mongoose");
 const taskSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
+
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
-    price: { type: Number, required: true },
+    createdUsername: {
+        type: String,
+    },
+
+    assignedTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: false,
+    },
+
+    applicants: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    }, ],
     applied: {
         type: Number,
         default: 0,
     },
+
     status: {
         type: String,
-        enum: ["active", "inactive"],
-        default: "active",
+        enum: ["pending", "started", "late", "completed", "active", "inactive"],
+        default: "pending",
     },
+
+    price: {
+        type: Number,
+        min: [1, 'Price must be greater than 0'],
+        required: true
+    },
+
+    dueDate: Date,
 }, {
     timestamps: true,
 });
