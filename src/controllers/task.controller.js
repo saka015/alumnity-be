@@ -1,5 +1,5 @@
 const { Task } = require("../models/task.model");
-const { postCreateTask, getMyTasks, getAllTasks, getTaskById } = require("../services/task.services");
+const { postCreateTask, getMyTasks, getAllTasks, getTaskById, applyToTask } = require("../services/task.services");
 
 const createTask = async(req, res) => {
     try {
@@ -69,5 +69,24 @@ const fetchTaskById = async(req, res) => {
 };
 
 
+const applyToTaskById = async(req, res, next) => {
+    try {
+        const taskId = req.params.taskId;
+        const userId = req.user._id;
+        const { title, email, description } = req.body;
 
-module.exports = { createTask, fetchMyTasks, fetchAllTasks, fetchTaskById };
+        const result = await applyToTask(taskId, userId, {
+            title,
+            email,
+            description,
+        });
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error in applyToTaskController:', error.message);
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+module.exports = { createTask, fetchMyTasks, fetchAllTasks, fetchTaskById, applyToTaskById };

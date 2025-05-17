@@ -20,9 +20,12 @@ const taskSchema = new mongoose.Schema({
     },
 
     applicants: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-    }, ],
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        email: String,
+        title: String,
+        description: String,
+        appliedAt: { type: Date, default: Date.now }
+    }],
     applied: {
         type: Number,
         default: 0,

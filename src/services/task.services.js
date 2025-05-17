@@ -82,14 +82,42 @@ const getAllTasks = async(userId, searchTerm = "", page = 1, limit = 10) => {
 };
 
 const getTaskById = async(id) => {
-    const task = await Task.findById(id);
+    const task = await Task.findById(id).populate('applicants.user', 'username name email');;
     if (!task) {
         throw new NotFoundError("Task not found");
     }
-
     return task;
 };
 
 
+const applyToTask = async(taskId, userId, { title, email, description }) => {
+    const task = await Task.findById(taskId).populate('applicants.user', 'username name');
+    if (!task) {
+        throw new Error('Task not found');
+    }
 
-module.exports = { postCreateTask, getMyTasks, getAllTasks, getTaskById };
+    const alreadyApplied = task.applicants.some(
+        (app) => app.user.toString() === userId.toString()
+    );
+
+    if (alreadyApplied) {
+        throw new Error('Already applied');
+    }
+
+    task.applicants.push({
+        user: userId,
+        email,
+        title,
+        description,
+    });
+
+    await task.save();
+
+    return { message: 'Application submitted successfully' };
+};
+
+
+
+
+
+module.exports = { postCreateTask, getMyTasks, getAllTasks, getTaskById, applyToTask };
