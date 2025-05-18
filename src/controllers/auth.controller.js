@@ -55,8 +55,8 @@ const otpVerification = async(req, res, next) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "None",
+            secure: true,
+            sameSite: "none",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         console.log("Cookie 'token' set with value:", token);
@@ -94,7 +94,7 @@ const logout = (req, res) => {
         httpOnly: true,
         expires: new Date(0),
         secure: process.env.NODE_ENV === "production",
-        sameSite: "None",
+        sameSite: "none",
     });
     res
         .status(200)

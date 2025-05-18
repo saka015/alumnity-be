@@ -24,10 +24,10 @@ const io = new Server(server, {
         origin: process.env.FRONTEND_URL || "http://localhost:3000",
         methods: ["GET", "POST"],
         credentials: true,
-        allowedHeaders: ["Content-Type", "Authorization"]
+        allowedHeaders: ["Content-Type", "Authorization"],
     },
     allowEIO3: true,
-    transports: ['websocket', 'polling']
+    transports: ["websocket", "polling"],
 });
 
 const socketHandler = require("./socket/index");
@@ -43,23 +43,12 @@ app.use(morgan("dev"));
 // 3. Enable CORS (with credentials enabled for cookie support)
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL || "http://localhost:3000",
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"]
-    })
-);
-
-app.options(
-    "*",
-    cors({
-        origin: process.env.FRONTEND_URL || "http://localhost:3000",
+        origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
     })
 );
-
 
 // 4. Body Parsing Middleware
 app.use(express.json());
