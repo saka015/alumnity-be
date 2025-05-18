@@ -117,7 +117,18 @@ const applyToTask = async(taskId, userId, { title, email, description }) => {
 };
 
 
+// const getTasksAppliedByUser = async(userId) => {
+//     return await Task.find({ 'applicants.user': userId }).select('title status price dueDate').lean();
+// };
+
+const getTasksAppliedByUser = async(userId) => {
+    return await Task.find({ 'applicants.user': userId })
+        .select('title status price dueDate')
+        .lean();
+};
 
 
 
-module.exports = { postCreateTask, getMyTasks, getAllTasks, getTaskById, applyToTask };
+
+
+module.exports = { postCreateTask, getMyTasks, getAllTasks, getTaskById, applyToTask, getTasksAppliedByUser };

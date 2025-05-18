@@ -2,6 +2,13 @@ const connectionService = require("../services/connection.services");
 
 const sendRequest = async(req, res, next) => {
     try {
+
+        if (req.user._id ===
+            req.body.receiverId) {
+            throw new NotFoundError("Can't send friend request me yourself.");
+            return null;
+        }
+
         const request = await connectionService.sendConnectionRequest(
             req.user._id,
             req.body.receiverId

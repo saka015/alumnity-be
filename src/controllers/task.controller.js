@@ -1,5 +1,5 @@
 const { Task } = require("../models/task.model");
-const { postCreateTask, getMyTasks, getAllTasks, getTaskById, applyToTask } = require("../services/task.services");
+const { postCreateTask, getMyTasks, getAllTasks, getTaskById, applyToTask, getTasksAppliedByUser } = require("../services/task.services");
 
 const createTask = async(req, res) => {
     try {
@@ -88,5 +88,16 @@ const applyToTaskById = async(req, res, next) => {
     }
 };
 
+const fetchUserAppliedTasks = async(req, res) => {
+    try {
+        const userId = req.user._id;
+        const tasks = await getTasksAppliedByUser(userId);
+        res.json(tasks);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 
-module.exports = { createTask, fetchMyTasks, fetchAllTasks, fetchTaskById, applyToTaskById };
+
+module.exports = { createTask, fetchMyTasks, fetchAllTasks, fetchTaskById, applyToTaskById, fetchUserAppliedTasks };
