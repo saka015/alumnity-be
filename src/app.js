@@ -50,6 +50,17 @@ app.use(
     })
 );
 
+app.options(
+    "*",
+    cors({
+        origin: process.env.FRONTEND_URL || "http://localhost:3000",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
+
+
 // 4. Body Parsing Middleware
 app.use(express.json());
 
