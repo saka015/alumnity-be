@@ -50,12 +50,16 @@ const otpVerification = async(req, res, next) => {
         }
 
         const token = generateToken(user._id);
+
+        console.log("cookie: ", process.env.NODE_ENV);
+
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "None",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
+        console.log("Cookie 'token' set with value:", token);
 
         res.status(200).json({
             status: "success",
