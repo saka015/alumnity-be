@@ -50,15 +50,20 @@ const otpVerification = async(req, res, next) => {
 
         const token = generateToken(user._id);
 
-        res.cookie("token", token, {
+        const isProduction = process.env.NODE_ENV === "production";
+        const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "none",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000,
             path: "/",
-            domain: process.env.NODE_ENV === "production" ?
-                process.env.COOKIE_DOMAIN : undefined,
-        });
+        };
+
+        if (isProduction && process.env.COOKIE_DOMAIN) {
+            cookieOptions.domain = process.env.COOKIE_DOMAIN;
+        }
+
+        res.cookie("token", token, cookieOptions);
 
         res.status(200).json({
             status: "success",
@@ -89,15 +94,20 @@ const resendOTPController = async(req, res, next) => {
 };
 
 const logout = (req, res) => {
-    res.cookie("token", "", {
+    const isProduction = process.env.NODE_ENV === "production";
+    const cookieOptions = {
         httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         expires: new Date(0),
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
         path: "/",
-        domain: process.env.NODE_ENV === "production" ?
-            process.env.COOKIE_DOMAIN : undefined,
-    });
+    };
+
+    if (isProduction && process.env.COOKIE_DOMAIN) {
+        cookieOptions.domain = process.env.COOKIE_DOMAIN;
+    }
+
+    res.cookie("token", "", cookieOptions);
     res
         .status(200)
         .json({ status: "success", message: "Logged out successfully" });

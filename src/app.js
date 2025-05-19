@@ -20,14 +20,14 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
-    cors: {
-        origin: process.env.FRONTEND_URL || "http://localhost:3000",
-        methods: ["GET", "POST"],
-        credentials: true,
-        allowedHeaders: ["Content-Type", "Authorization"],
-    },
-    allowEIO3: true,
-    transports: ["websocket", "polling"],
+  cors: {
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  },
+  allowEIO3: true,
+  transports: ["websocket", "polling"],
 });
 
 const socketHandler = require("./socket/index");
@@ -36,10 +36,23 @@ socketHandler(io);
 // Apply Middleware
 // 1. Security Headers
 app.use(
-    helmet({
-        crossOriginResourcePolicy: { policy: "cross-origin" },
-        crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-    })
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: [
+          "'self'",
+          process.env.FRONTEND_URL || "http://localhost:3000",
+        ],
+      },
+    },
+  })
 );
 
 // 2. Request Logging
@@ -47,13 +60,13 @@ app.use(morgan("dev"));
 
 // 3. Enable CORS (with credentials enabled for cookie support)
 app.use(
-    cors({
-        origin: process.env.FRONTEND_URL || "http://localhost:3000",
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-        exposedHeaders: ["Set-Cookie"],
-    })
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],
+  })
 );
 
 // 4. Body Parsing Middleware
@@ -67,9 +80,9 @@ app.use(compression());
 
 // 7. Rate Limiting (to prevent abuse)
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per window
-    message: "Too many requests from this IP, please try again later.",
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+  message: "Too many requests from this IP, please try again later.",
 });
 app.use(limiter);
 
@@ -85,7 +98,7 @@ app.use("/api/v1/chat", chatRoutes);
 
 // 3. Default Route (for testing or fallback)
 app.get("/", (req, res) => {
-    res.send("Server is running");
+  res.send("Server is running");
 });
 
 // Global 404 handler for undefined routes
