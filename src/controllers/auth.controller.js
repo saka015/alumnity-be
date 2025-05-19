@@ -43,7 +43,6 @@ const otpVerification = async(req, res, next) => {
             });
         }
 
-        // Mark user as verified
         if (!user.isVerified) {
             user.isVerified = true;
             await user.save();
@@ -51,15 +50,15 @@ const otpVerification = async(req, res, next) => {
 
         const token = generateToken(user._id);
 
-        console.log("cookie: ", process.env.NODE_ENV);
-
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
             sameSite: "none",
             maxAge: 7 * 24 * 60 * 60 * 1000,
+            path: "/",
+            domain: process.env.NODE_ENV === "production" ?
+                process.env.COOKIE_DOMAIN : undefined,
         });
-        console.log("Cookie 'token' set with value:", token);
 
         res.status(200).json({
             status: "success",
@@ -95,6 +94,9 @@ const logout = (req, res) => {
         expires: new Date(0),
         secure: process.env.NODE_ENV === "production",
         sameSite: "none",
+        path: "/",
+        domain: process.env.NODE_ENV === "production" ?
+            process.env.COOKIE_DOMAIN : undefined,
     });
     res
         .status(200)

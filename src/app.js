@@ -35,7 +35,12 @@ socketHandler(io);
 
 // Apply Middleware
 // 1. Security Headers
-app.use(helmet());
+app.use(
+    helmet({
+        crossOriginResourcePolicy: { policy: "cross-origin" },
+        crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    })
+);
 
 // 2. Request Logging
 app.use(morgan("dev"));
@@ -43,10 +48,11 @@ app.use(morgan("dev"));
 // 3. Enable CORS (with credentials enabled for cookie support)
 app.use(
     cors({
-        origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
+        origin: process.env.FRONTEND_URL || "http://localhost:3000",
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
+        exposedHeaders: ["Set-Cookie"],
     })
 );
 
