@@ -10,6 +10,7 @@ const errorHandler = require("./middlewares/errorHandler"); // Global error hand
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const taskRoutes = require("./routes/task.routes");
+const productRoutes = require("./routes/product.routes");
 const connectionRoutes = require("./routes/connection.routes");
 const chatRoutes = require("./routes/chat.routes");
 const { Server } = require("socket.io");
@@ -93,6 +94,7 @@ app.use("/api/v1", authRoutes);
 // 2. User routes (for user profile, etc.)
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/task", taskRoutes);
+app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/connection", connectionRoutes);
 app.use("/api/v1/chat", chatRoutes);
 
