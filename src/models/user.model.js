@@ -43,19 +43,16 @@ const userSchema = new mongoose.Schema({
     },
     graduationYear: {
         type: Number,
-        required: true,
+        default: 2025,
     },
     linkedin: {
         type: String,
-        required: true,
     },
     company: {
         type: String,
-        required: true,
     },
     position: {
         type: String,
-        required: true,
     },
     calendly: {
         type: String,

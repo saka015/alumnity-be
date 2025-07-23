@@ -5,6 +5,7 @@ const productSchema = new mongoose.Schema({
     description: String,
     price: { type: Number, required: true },
     duration: { type: Number, default: 30 },
+
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -14,30 +15,36 @@ const productSchema = new mongoose.Schema({
 
     meetLink: String,
     availableDates: [Date],
-    bookedDate: Date,
-    bookedTime: {
-        type: Number,
-        enum: [18, 19, 20, 21, 22, 23],
-        default: null,
-    },
 
-    bookedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        default: null,
-    },
-    bookedAt: Date,
+    bookedBy: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        bookedAt: {
+            type: Date,
+            default: Date.now,
+        },
+        bookedDate: Date,
+        bookedTime: {
+            type: Number,
+            enum: [18, 19, 20, 21, 22, 23],
+            default: null,
+        },
+        paymentStatus: {
+            type: String,
+            enum: ["pending", "paid", "failed"],
+            default: "pending",
+        },
+    }, ],
 
-    paymentStatus: {
-        type: String,
-        enum: ["pending", "paid", "failed"],
-        default: "pending",
-    },
     productType: {
         type: String,
         enum: ["session", "product"],
         required: true,
     },
+
     productLink: {
         type: String,
     },

@@ -1,10 +1,10 @@
 const express = require("express");
 const {
-  register,
-  login,
-  otpVerification,
-  resendOTPController,
-  logout,
+    register,
+    login,
+    otpVerification,
+    resendOTPController,
+    logout,
 } = require("../controllers/auth.controller");
 const { protect } = require("../middlewares/auth.middleware");
 
@@ -19,7 +19,5 @@ router.post("/auth/resend-otp", resendOTPController);
 // Protected routes
 router.get("/auth/logout", protect, logout);
 
-// protected
-// router.get("/profile", protect, getUserProfile);
 
 module.exports = router;

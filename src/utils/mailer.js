@@ -55,4 +55,43 @@ const sendOtpEmail = async (to, otp) => {
   }
 };
 
-module.exports = { sendOtpEmail };
+const sendBookingConfirmationEmail = async (
+  to,
+  { productName, creatorName, bookedDate, bookedTime, meetLink }
+) => {
+  try {
+    // if (process.env.NODE_ENV === "development") {
+    //   console.log(
+    //     `Booking confirmation: ${productName} with ${creatorName} at ${bookedDate} ${bookedTime}:00, link: ${meetLink}`
+    //   );
+    //   return;
+    // }
+
+    const transporter = createTransporter();
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to,
+      subject: `Your session for "${productName}" has been booked`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">Booking Confirmed!</h2>
+          <p>Your session for <b>${productName}</b> has been booked with <b>${creatorName}</b>.</p>
+          <p><b>Date:</b> ${new Date(bookedDate).toLocaleDateString()}</p>
+          <p><b>Time:</b> ${bookedTime}:00</p>
+          <p><b>Meet Link:</b> <a href="${meetLink}">${meetLink}</a></p>
+          <p style="color: #999; font-size: 12px;">If you have any questions, reply to this email.</p>
+        </div>
+      `,
+    };
+
+    await transporter.verify();
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Booking confirmation sent to ${to}`);
+  } catch (error) {
+    console.error("❌ Error sending booking confirmation email:", error);
+    throw new ValidationError("Failed to send booking confirmation email.");
+  }
+};
+
+module.exports = { sendOtpEmail, sendBookingConfirmationEmail };
