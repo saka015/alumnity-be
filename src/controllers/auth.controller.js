@@ -4,6 +4,8 @@ const {
     verifyOTP,
     resendOTP,
     storeOTP,
+    forgotPassword,
+    resetPassword,
 } = require("../services/auth.service");
 const { User } = require("../models/user.model");
 const { generateToken } = require("../utils/generate.jwt");
@@ -92,6 +94,26 @@ const resendOTPController = async(req, res, next) => {
     }
 };
 
+const forgotPasswordController = async(req, res, next) => {
+    try {
+        const { email } = req.body;
+        const response = await forgotPassword(email);
+        res.status(200).json({ status: "success", message: response.message });
+    } catch (err) {
+        next(err);
+    }
+};
+
+const resetPasswordController = async(req, res, next) => {
+    try {
+        const { email, newPassword } = req.body;
+        const response = await resetPassword(email, newPassword);
+        res.status(200).json({ status: "success", message: response.message });
+    } catch (err) {
+        next(err);
+    }
+};
+
 const logout = (req, res) => {
     const isProduction = process.env.NODE_ENV === "production";
     const cookieOptions = {
@@ -116,4 +138,6 @@ module.exports = {
     otpVerification,
     resendOTPController,
     logout,
+    forgotPasswordController,
+    resetPasswordController,
 };
