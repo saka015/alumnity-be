@@ -4,9 +4,11 @@ const cors = require("cors");
 // const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const compression = require("compression");
-const cookieParser = require("cookie-parser"); // Import cookie-parser
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const passport = require("passport");
 const http = require("http");
-const errorHandler = require("./middlewares/error.middleware"); // Global error handler
+const errorHandler = require("./middlewares/error.middleware");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const taskRoutes = require("./routes/task.routes");
@@ -14,6 +16,10 @@ const productRoutes = require("./routes/product.routes");
 const connectionRoutes = require("./routes/connection.routes");
 const chatRoutes = require("./routes/chat.routes");
 const { Server } = require("socket.io");
+
+// Import passport config
+require("./config/passport");
+
 // Create express app
 const app = express();
 
@@ -76,10 +82,28 @@ app.use(express.json());
 // 5. Cookie Parsing Middleware (for JWT in cookies)
 app.use(cookieParser());
 
-// 6. Compression Middleware (gzip or deflate content)
+// 6. Session Middleware (for Passport.js)
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || "your-secret-key",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            secure: process.env.NODE_ENV === "production",
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        },
+    })
+);
+
+// 7. Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// 8. Compression Middleware (gzip or deflate content)
 app.use(compression());
 
-// 7. Rate Limiting (to prevent abuse)
+// 9. Rate Limiting (to prevent abuse)
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per window

@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema({
         bookedDate: Date,
         bookedTime: {
             type: Number,
-            enum: [18, 19, 20, 21, 22, 23],
+            enum: [18, 19, 20, 21, 22, 23, ],
             default: null,
         },
         paymentStatus: {

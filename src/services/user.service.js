@@ -50,7 +50,7 @@ const getExploreSeniors = async(userId, searchTerm) => {
     }
 
     const seniors = await User.find(query).select(
-        "name graduationYear linkedin company position username"
+        "name graduationYear linkedin company position username profilePicture"
     );
 
     return seniors;

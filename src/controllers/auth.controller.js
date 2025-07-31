@@ -76,6 +76,7 @@ const otpVerification = async(req, res, next) => {
                 username: user.username,
                 role: user.role,
                 isVerified: user.isVerified,
+                profilePicture: user.profilePicture,
             },
         });
     } catch (error) {
